@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soru Cevap</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f0f0;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 1.5rem;
+      padding: 1rem;
+    }
+
+    .question-box {
+      max-width: 90%;
+      padding: 1rem;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+      padding: 10px 0;
+    }
+
+    .buttons button {
+      flex: 1;
+      padding: 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      background-color: #eee;
+      transition: background-color 0.2s;
+    }
+
+    .buttons button:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="content">
+    <div class="question-box" id="display">Bir konu seçin</div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="showQuestion('mantik')">Mantık</button>
+    <button onclick="showQuestion('usul')">Usul</button>
+    <button onclick="showQuestion('akaid')">Akaid</button>
+    <button onclick="showAnswer()">Cevap</button>
+  </div>
+
+  <script>
+    let data = {};
+    let currentQA = null;
+
+    // Load questions from JSON file
+    fetch('questions.json')
+      .then(response => response.json())
+      .then(json => {
+        data = json;
+      })
+      .catch(error => {
+        console.error('Sorular yüklenemedi:', error);
+        document.getElementById('display').innerText = "Sorular yüklenemedi.";
+      });
+
+    function showQuestion(subject) {
+      const items = data[subject];
+      if (!items || items.length === 0) {
+        document.getElementById('display').innerText = "Soru bulunamadı.";
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * items.length);
+      currentQA = items[randomIndex];
+      document.getElementById('display').innerText = currentQA.q;
+    }
+
+    function showAnswer() {
+      if (currentQA) {
+        document.getElementById('display').innerText = currentQA.a;
+      } else {
+        document.getElementById('display').innerText = "Lütfen önce bir soru seçin.";
+      }
+    }
+  </script>
+</body>
+</html>
